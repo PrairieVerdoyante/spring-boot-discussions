@@ -24,7 +24,7 @@ public class DiscussionController {
     @PostMapping
     public ResponseEntity<Discussion> createDiscussion(@RequestBody Discussion Discussion) {
         Discussion savedDiscussion = discussionService.save(Discussion);
-        return new ResponseEntity<>(savedDiscussion, HttpStatus.CREATED);// retourner id
+        return new ResponseEntity<>(savedDiscussion, HttpStatus.CREATED);
     }
 
 

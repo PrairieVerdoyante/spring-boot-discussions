@@ -97,6 +97,18 @@ public class Discussion {
         }
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

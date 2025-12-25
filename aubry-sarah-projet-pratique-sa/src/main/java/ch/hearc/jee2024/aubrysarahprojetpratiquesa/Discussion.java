@@ -1,11 +1,19 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Discussion {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String content;
     private String author;
@@ -27,13 +35,14 @@ public class Discussion {
         this.createdAt = LocalDateTime.now();
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getTitle() {
         return title;
@@ -119,6 +128,6 @@ public class Discussion {
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Long.hashCode(id);
     }
 }

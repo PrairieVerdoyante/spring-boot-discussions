@@ -5,9 +5,12 @@ import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
-public class DiscussionServiceImpl implements DiscussionService {
+public abstract class DiscussionServiceImpl implements DiscussionService {
 
     private final DiscussionRepository repository;
 
@@ -21,29 +24,28 @@ public class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public String sendDiscussion(Discussion Discussion) {
+    public String sendDiscussion(Discussion discussion) {
         return "send";
     }
 
     @Override
-    public Discussion save(Discussion Discussion) {
-        return repository.save(Discussion);
+    public Discussion save(Discussion discussion) {
+        return (repository.save(discussion));
     }
 
     @Override
-    public Discussion findById(int id)
-    {
+    public Optional<Discussion> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public void delete(int id)
+    public void delete(Long id)
     {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     @Override
-    public List<Discussion> findAll() {
+    public Iterable<Discussion> findAll() {
         return repository.findAll();
     }
 }

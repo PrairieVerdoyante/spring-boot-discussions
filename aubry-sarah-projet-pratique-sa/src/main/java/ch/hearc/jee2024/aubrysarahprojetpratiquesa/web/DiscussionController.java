@@ -27,13 +27,10 @@ public class DiscussionController {
         return new ResponseEntity<>(savedDiscussion, HttpStatus.CREATED);// retourner id
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
 
-    // GET /Discussions/all (lister)
-    @GetMapping("/all")
+
+    // GET /Discussions (lister)
+    @GetMapping("")
     public List<Discussion> getAll() {
         return discussionService.findAll();
     }

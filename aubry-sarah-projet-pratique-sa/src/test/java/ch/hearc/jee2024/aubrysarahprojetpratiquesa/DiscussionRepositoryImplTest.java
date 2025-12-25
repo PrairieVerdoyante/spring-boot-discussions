@@ -1,6 +1,7 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
+import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,11 @@ class DiscussionRepositoryImplTest {
 
     @Test
     void saveDiscussionTest() {
+        UserEntity user = new UserEntity("Sarah",  "admin");
         DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Titre test",
                 "Contenu test",
-                "Sarah",
+                user,
                 "General"
         );
 
@@ -41,10 +43,11 @@ class DiscussionRepositoryImplTest {
 
     @Test
     void findByIdTest() {
+        UserEntity user = new UserEntity("Sarah",  "admin");
         DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Sujet",
                 "Contenu",
-                "Auteur",
+                user,
                 "Test"
         );
 
@@ -60,8 +63,9 @@ class DiscussionRepositoryImplTest {
 
     @Test
     void findAllTest() {
-        discussionRepository.save(new DiscussionEntity("T1", "C1", "A1", "Cat1"));
-        discussionRepository.save(new DiscussionEntity("T2", "C2", "A2", "Cat2"));
+        UserEntity user = new UserEntity("Sarah",  "admin");
+        discussionRepository.save(new DiscussionEntity("T1", "C1", user, "Cat1"));
+        discussionRepository.save(new DiscussionEntity("T2", "C2", user, "Cat2"));
 
         int count = 0;
         while (discussionRepository.findAll().iterator().hasNext()) {
@@ -73,8 +77,9 @@ class DiscussionRepositoryImplTest {
 
     @Test
     void deleteTest() {
+        UserEntity user = new UserEntity("Sarah",  "admin");
         DiscussionEntity discussionEntity = discussionRepository.save(
-                new DiscussionEntity("À supprimer", "Contenu", "Auteur", "Temp")
+                new DiscussionEntity("À supprimer", "Contenu", user, "Temp")
         );
 
         assertTrue(discussionRepository.findAll().iterator().hasNext());

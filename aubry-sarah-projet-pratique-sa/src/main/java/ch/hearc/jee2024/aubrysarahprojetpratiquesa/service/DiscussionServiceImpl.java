@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public abstract class DiscussionServiceImpl implements DiscussionService {
+public final class DiscussionServiceImpl implements DiscussionService {
 
     private final DiscussionRepository repository;
 

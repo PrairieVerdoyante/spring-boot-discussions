@@ -1,6 +1,8 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,11 @@ class DiscussionServiceImplTest {
 
     @Test
     void saveDiscussionTest() {
+        UserEntity userEntity = new UserEntity("Sarah", "admin");
         DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Titre test",
                 "Contenu test",
-                "Sarah",
+                userEntity,
                 "General"
         );
 
@@ -47,7 +50,7 @@ class DiscussionServiceImplTest {
         DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Sujet",
                 "Contenu",
-                "Sarah",
+                new UserEntity(),
                 "Test"
         );
 
@@ -60,9 +63,10 @@ class DiscussionServiceImplTest {
     }
 
     @Test
-    void findAllTest() {
-        discussionService.save(new DiscussionEntity("T1", "C1", "A", "Cat1"));
-        discussionService.save(new DiscussionEntity("T2", "C2", "B", "Cat2"));
+    void findAllTest() { // author
+        UserEntity userEntity = new UserEntity("Sarah",  "admin");
+        discussionService.save(new DiscussionEntity("T1", "C1", userEntity, "Cat1"));
+        discussionService.save(new DiscussionEntity("T2", "C2", userEntity, "Cat2"));
 
         Iterable<DiscussionEntity> discussions = discussionService.findAll();
         long count = StreamSupport.stream(discussions.spliterator(), false)
@@ -72,8 +76,9 @@ class DiscussionServiceImplTest {
 
     @Test
     void deleteDiscussionTest() {
+        UserEntity user = new UserEntity("Sarah",  "admin");
         DiscussionEntity discussionEntity = discussionService.save(
-                new DiscussionEntity("À supprimer", "Contenu", "Sarah", "Temp")
+                new DiscussionEntity("À supprimer", "Contenu", user, "Temp")
         );
 
         Iterable<DiscussionEntity> allDiscussions = discussionService.findAll();

@@ -1,15 +1,14 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
 
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.Discussion;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface DiscussionService {
     String sendDiscussion(String message, String destinataire);
-    String sendDiscussion(Discussion discussion);
-    Discussion save(Discussion discussion);
-    Optional<Discussion> findById(Long id);
-    Iterable<Discussion> findAll();
+    String sendDiscussion(DiscussionEntity discussionEntity);
+    DiscussionEntity save(DiscussionEntity discussionEntity);
+    Optional<DiscussionEntity> findById(Long id);
+    Iterable<DiscussionEntity> findAll();
     void delete(Long id);
 }

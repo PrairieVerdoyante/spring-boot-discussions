@@ -1,10 +1,12 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.Discussion;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,19 +20,19 @@ class DiscussionRepositoryImplTest {
     void setUp() {
         // Nettoyage du repository avant chaque test
         discussionRepository.findAll()
-                .forEach(d -> discussionRepository.delete(d.getId()));
+                .forEach(d -> discussionRepository.deleteById(d.getId()));
     }
 
     @Test
     void saveDiscussionTest() {
-        Discussion discussion = new Discussion(
+        DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Titre test",
                 "Contenu test",
                 "Sarah",
                 "General"
         );
 
-        Discussion saved = discussionRepository.save(discussion);
+        DiscussionEntity saved = discussionRepository.save(discussionEntity);
 
         assertNotNull(saved);
         assertTrue(saved.getId() > 0);
@@ -39,41 +41,50 @@ class DiscussionRepositoryImplTest {
 
     @Test
     void findByIdTest() {
-        Discussion discussion = new Discussion(
+        DiscussionEntity discussionEntity = new DiscussionEntity(
                 "Sujet",
                 "Contenu",
                 "Auteur",
                 "Test"
         );
 
-        Discussion saved = discussionRepository.save(discussion);
+        DiscussionEntity saved = discussionRepository.save(discussionEntity);
 
-        Discussion found = discussionRepository.findById(saved.getId());
+        Optional<DiscussionEntity> found = discussionRepository.findById(saved.getId());
 
-        assertNotNull(found);
-        assertEquals(saved.getId(), found.getId());
-        assertEquals(saved.getTitle(), found.getTitle());
+        assertTrue(found.isPresent());
+
+        assertEquals(saved.getId(), found.get().getId());
+        assertEquals(saved.getTitle(), found.get().getTitle());
     }
 
     @Test
     void findAllTest() {
-        discussionRepository.save(new Discussion("T1", "C1", "A1", "Cat1"));
-        discussionRepository.save(new Discussion("T2", "C2", "A2", "Cat2"));
+        discussionRepository.save(new DiscussionEntity("T1", "C1", "A1", "Cat1"));
+        discussionRepository.save(new DiscussionEntity("T2", "C2", "A2", "Cat2"));
 
-        assertEquals(2, discussionRepository.findAll().size());
+        int count = 0;
+        while (discussionRepository.findAll().iterator().hasNext()) {
+            count++;
+        }
+        assertEquals(2, count);
+
     }
 
     @Test
     void deleteTest() {
-        Discussion discussion = discussionRepository.save(
-                new Discussion("À supprimer", "Contenu", "Auteur", "Temp")
+        DiscussionEntity discussionEntity = discussionRepository.save(
+                new DiscussionEntity("À supprimer", "Contenu", "Auteur", "Temp")
         );
 
-        assertFalse(discussionRepository.findAll().isEmpty());
+        assertTrue(discussionRepository.findAll().iterator().hasNext());
 
-        discussionRepository.delete(discussion.getId());
+        discussionRepository.deleteById(discussionEntity.getId());
 
-        assertTrue(discussionRepository.findAll().isEmpty());
-        assertNull(discussionRepository.findById(discussion.getId()));
+        assertFalse(discussionRepository.findAll().iterator().hasNext());
+
+        // l'objet n'existe plus
+        Optional<DiscussionEntity> deleted = discussionRepository.findById(discussionEntity.getId());
+        assertTrue(deleted.isEmpty());
     }
 }

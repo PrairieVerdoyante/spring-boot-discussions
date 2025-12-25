@@ -1,33 +1,47 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.h2.engine.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Discussion {
+@Table(name = "discussion")
+public class DiscussionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, length = 2000)
     private String content;
-    private String author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity author;
+
+    @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+
+
     private boolean blocked;
     private boolean deleted;
-    private final List<Response> responses = new ArrayList<>();
 
-    public Discussion() {
+    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ResponseEntity> response = new ArrayList<>();
+
+    public DiscussionEntity() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Discussion(String title, String content, String author, String category) {
+    public DiscussionEntity(String title, String content, UserEntity author, String category) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -60,7 +74,7 @@ public class Discussion {
         this.content = content;
     }
 
-    public String getAuthor() {
+    public UserEntity getAuthor() {
         return author;
     }
 
@@ -84,8 +98,8 @@ public class Discussion {
         return deleted;
     }
 
-    public List<Response> getResponses() {
-        return responses;
+    public List<ResponseEntity> getResponses() {
+        return response;
     }
 
     public void block() {
@@ -100,13 +114,13 @@ public class Discussion {
         this.deleted = true;
     }
 
-    public void addResponse(Response response) {
+    public void addResponse(ResponseEntity responseEntity) {
         if (!blocked && !deleted) {
-            responses.add(response);
+            response.add(responseEntity);
         }
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(UserEntity author) {
         this.author = author;
     }
 
@@ -121,8 +135,8 @@ public class Discussion {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Discussion)) return false;
-        Discussion that = (Discussion) o;
+        if (!(o instanceof DiscussionEntity)) return false;
+        DiscussionEntity that = (DiscussionEntity) o;
         return id == that.id;
     }
 

@@ -1,13 +1,10 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
 
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.Discussion;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public abstract class DiscussionServiceImpl implements DiscussionService {
@@ -24,17 +21,17 @@ public abstract class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public String sendDiscussion(Discussion discussion) {
+    public String sendDiscussion(DiscussionEntity discussionEntity) {
         return "send";
     }
 
     @Override
-    public Discussion save(Discussion discussion) {
-        return (repository.save(discussion));
+    public DiscussionEntity save(DiscussionEntity discussionEntity) {
+        return (repository.save(discussionEntity));
     }
 
     @Override
-    public Optional<Discussion> findById(Long id) {
+    public Optional<DiscussionEntity> findById(Long id) {
         return repository.findById(id);
     }
 
@@ -45,7 +42,7 @@ public abstract class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public Iterable<Discussion> findAll() {
+    public Iterable<DiscussionEntity> findAll() {
         return repository.findAll();
     }
 }

@@ -1,5 +1,5 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web;
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.Discussion;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +19,24 @@ public class DiscussionController {
 
     // POST /Discussions : créer une Discussion
     @PostMapping
-    public ResponseEntity<Discussion> createDiscussion(@RequestBody Discussion discussion) {
-        Discussion savedDiscussion = discussionService.save(discussion);
-        return new ResponseEntity<>(savedDiscussion, HttpStatus.CREATED);
+    public ResponseEntity<DiscussionEntity> createDiscussion(@RequestBody DiscussionEntity discussionEntity) {
+        DiscussionEntity savedDiscussionEntity = discussionService.save(discussionEntity);
+        return new ResponseEntity<>(savedDiscussionEntity, HttpStatus.CREATED);
     }
 
 
 
     // GET /Discussions (lister)
     @GetMapping("")
-    public Iterable<Discussion> getAll() {
+    public Iterable<DiscussionEntity> getAll() {
         return discussionService.findAll();
     }
 
     // GET /Discussions/{id} (lire le contenu)
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Discussion> getDiscussionById(@PathVariable Long id) {
-        Optional<Discussion> discussion = discussionService.findById(id);
+    public ResponseEntity<DiscussionEntity> getDiscussionById(@PathVariable Long id) {
+        Optional<DiscussionEntity> discussion = discussionService.findById(id);
         return discussion.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
@@ -46,29 +46,29 @@ public class DiscussionController {
     // UPDATE
     @PutMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Discussion> updateDiscussion(
+    public ResponseEntity<DiscussionEntity> updateDiscussion(
             @PathVariable Long id,
-            @RequestBody Discussion discussion) {
+            @RequestBody DiscussionEntity discussionEntity) {
 
-        Optional<Discussion> existingOpt = discussionService.findById(id);
+        Optional<DiscussionEntity> existingOpt = discussionService.findById(id);
 
         if (existingOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Discussion existing = existingOpt.get();
-        existing.setTitle(discussion.getTitle());
-        existing.setContent(discussion.getContent());
-        existing.setCategory(discussion.getCategory());
+        DiscussionEntity existing = existingOpt.get();
+        existing.setTitle(discussionEntity.getTitle());
+        existing.setContent(discussionEntity.getContent());
+        existing.setCategory(discussionEntity.getCategory());
 
-        Discussion updated = discussionService.save(existing);
-        return ResponseEntity.ok(discussion);
+        DiscussionEntity updated = discussionService.save(existing);
+        return ResponseEntity.ok(discussionEntity);
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
     public ResponseEntity<Object> deleteDiscussionById(@PathVariable Long id) {
-        Optional<Discussion> existing = discussionService.findById(id);
+        Optional<DiscussionEntity> existing = discussionService.findById(id);
 
         if (existing.isEmpty()) {
             return ResponseEntity.notFound().build(); // 404

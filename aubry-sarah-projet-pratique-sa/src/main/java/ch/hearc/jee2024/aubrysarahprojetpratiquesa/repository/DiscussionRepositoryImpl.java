@@ -1,10 +1,12 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.Discussion;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class DiscussionRepositoryImpl implements DiscussionRepository {
 
     private final List<Discussion> discussions = new ArrayList<>();
@@ -36,6 +38,6 @@ public class DiscussionRepositoryImpl implements DiscussionRepository {
 
     @Override
     public void delete(int id) {
-
+        discussions.removeIf(discussion -> discussion.getId() == id);
     }
 }

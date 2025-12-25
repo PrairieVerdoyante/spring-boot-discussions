@@ -59,6 +59,10 @@ public class Discussion {
         return category;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

@@ -1,5 +1,7 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.h2.engine.User;
 
@@ -22,6 +24,7 @@ public class DiscussionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity author;
 
     @Column(nullable = false)
@@ -35,6 +38,7 @@ public class DiscussionEntity {
     private boolean deleted;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ResponseEntity> response = new ArrayList<>();
 
     public DiscussionEntity() {

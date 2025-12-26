@@ -1,20 +1,22 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class AubrySarahProjetPratiqueSaApplicationTests {
@@ -22,8 +24,25 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private Long userId;
+
+    @BeforeEach
+    void setup() {
+        userRepository.deleteAll();
+        userId = userRepository
+                .save(new UserEntity("Sarah", "ADMIN"))
+                .getId();
+    }
+
     @Test
     void contextLoads() {
+        // vérifie que le contexte Spring démarre
     }
 
     @Test
@@ -33,22 +52,28 @@ class AubrySarahProjetPratiqueSaApplicationTests {
 
         try {
             Class<?> controller = Class.forName(controllerFqdn);
-            boolean isRestController =
-                    controller.isAnnotationPresent(RestController.class);
-
-            assertTrue(isRestController,
-                    String.format("Controller %s is not a RestController", controllerFqdn));
+            assertTrue(
+                    controller.isAnnotationPresent(RestController.class),
+                    "DiscussionController is not annotated with @RestController"
+            );
         } catch (ClassNotFoundException e) {
-            fail(String.format("Controller %s does not exist", controllerFqdn));
+            fail("DiscussionController does not exist");
         }
     }
 
     @Test
     void createDiscussionShouldReturn201() throws Exception {
-        String json = "{\"title\":\"Sujet test\",\"content\":\"Contenu test\",\"category\":\"General\"}";
+        String json = """
+                {
+                  "title": "Sujet test",
+                  "content": "Contenu test",
+                  "category": "General",
+                  "userId": %d
+                }
+                """.formatted(userId);
 
         mvc.perform(post("/discussions")
-                        .contentType(MediaType.APPLICATION_JSON) // type du corps
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
@@ -67,26 +92,31 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 {
                   "title": "Sujet unique",
                   "content": "Contenu unique",
-                  "category": "Test"
+                  "category": "Test",
+                  "userId": %d
                 }
-                """;
+                """.formatted(userId);
 
-        String response = mvc.perform(post("/discussions")
+        MvcResult result = mvc.perform(post("/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andReturn();
 
-        mvc.perform(get("/discussions/1"))
+        JsonNode body = objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        );
+
+        Long discussionId = body.get("id").asLong();
+
+        mvc.perform(get("/discussions/{id}", discussionId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Sujet unique"));
     }
 
     @Test
     void getDiscussionByIdShouldReturn404IfNotFound() throws Exception {
-        mvc.perform(get("/discussions/999"))
+        mvc.perform(get("/discussions/{id}", 9999))
                 .andExpect(status().isNotFound());
     }
 
@@ -96,17 +126,25 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 {
                   "title": "Sujet à supprimer",
                   "content": "Contenu",
-                  "category": "Temp"
+                  "category": "Temp",
+                  "userId": %d
                 }
-                """;
+                """.formatted(userId);
 
-        mvc.perform(post("/discussions")
+        MvcResult result = mvc.perform(post("/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        mvc.perform(delete("/discussions/1"))
+        Long discussionId = objectMapper
+                .readTree(result.getResponse().getContentAsString())
+                .get("id").asLong();
+
+        mvc.perform(delete("/discussions/{id}", discussionId))
                 .andExpect(status().isNoContent());
-    }
 
+        mvc.perform(get("/discussions/{id}", discussionId))
+                .andExpect(status().isNotFound());
+    }
 }

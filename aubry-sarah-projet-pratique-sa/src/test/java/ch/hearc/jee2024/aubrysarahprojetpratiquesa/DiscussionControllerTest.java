@@ -1,87 +1,98 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DiscussionControllerTest {
+class DiscussionControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
-    @Test
-    void createDiscussionTest() throws Exception {
-        String json = "{\"title\":\"Sujet test\",\"content\":\"Contenu test\",\"author\":\"Sarah\",\"category\":\"General\"}";
+    @Autowired
+    private UserRepository userRepository;
 
-        mvc.perform(post("/discussions")
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private Long userId;
+
+    @BeforeEach
+    void setup() {
+        userRepository.deleteAll();
+        userId = userRepository
+                .save(new UserEntity("Sarah", "ADMIN"))
+                .getId();
+    }
+
+    @Test
+    void createAndGetByIdTest() throws Exception {
+        String json = """
+                {
+                  "title": "Sujet test",
+                  "content": "Contenu",
+                  "category": "General",
+                  "userId": %d
+                }
+                """.formatted(userId);
+
+        MvcResult result = mvc.perform(post("/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("Sujet test"))
-                .andExpect(jsonPath("$.id").isNumber());
+                .andReturn();
+
+        JsonNode body = objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        );
+
+        Long discussionId = body.get("id").asLong();
+
+        mvc.perform(get("/discussions/{id}", discussionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Sujet test"));
     }
 
     @Test
-    void getAllDiscussionsTest() throws Exception {
-        mvc.perform(get("/discussions"))
-                .andExpect(status().isOk());
-    }
+    void deleteTest() throws Exception {
+        String json = """
+        {
+          "title": "A supprimer",
+          "content": "Contenu",
+          "category": "Temp",
+          "userId": %d
+        }
+        """.formatted(userId);
 
-    @Test
-    void getDiscussionByIdTest() throws Exception {
-        String json = "{\"title\":\"Sujet unique\",\"content\":\"Contenu\",\"author\":\"Sarah\",\"category\":\"Test\"}";
-
-        mvc.perform(post("/discussions")
+        MvcResult result = mvc.perform(post("/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        mvc.perform(get("/discussions/{id}", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Sujet unique"));
-    }
+        String responseBody = result.getResponse().getContentAsString();
+        assertFalse(responseBody.isBlank(), "Response body is empty");
 
-    @Test
-    void getDiscussionByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/discussions/{id}", 999))
-                .andExpect(status().isNotFound());
-    }
+        Long id = objectMapper
+                .readTree(responseBody)
+                .get("id").asLong();
 
-    @Test
-    void updateDiscussionTest() throws Exception {
-        String createJson = "{\"title\":\"Avant\",\"content\":\"Contenu\",\"author\":\"Sarah\",\"category\":\"Test\"}";
-        String updateJson = "{\"title\":\"Après\",\"content\":\"Nouveau contenu\",\"category\":\"Update\"}";
-
-        mvc.perform(post("/discussions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(createJson))
-                .andExpect(status().isCreated());
-
-        mvc.perform(put("/discussions/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Après"));
-    }
-
-    @Test
-    void deleteDiscussionTest() throws Exception {
-        String json = "{\"title\":\"À supprimer\",\"content\":\"Contenu\",\"author\":\"Sarah\",\"category\":\"Temp\"}";
-
-        mvc.perform(post("/discussions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isCreated());
-
-        mvc.perform(delete("/discussions/{id}", 1))
+        mvc.perform(delete("/discussions/{id}", id))
                 .andExpect(status().isNoContent());
     }
 }

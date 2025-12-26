@@ -3,8 +3,8 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto;
 public class DiscussionCreateDto {
     private String title;
     private String content;
-    private String category;
     private Long userId;
+    private String category;
 
     public String getTitle() { return title; }
     public String getContent() { return content; }

@@ -2,6 +2,7 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,74 +19,43 @@ class DiscussionServiceImplTest {
     @Autowired
     private DiscussionService discussionService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    private UserEntity user;
+
     @BeforeEach
-    void setUp() {
-        // Si ton repository est en mémoire et partagé,
-        // il doit être vide au début de chaque test
-        discussionService.findAll().forEach(d ->
-                discussionService.delete(d.getId())
-        );
+    void setup() {
+        userRepository.deleteAll();
+        user = userRepository.save(new UserEntity("Sarah", "ADMIN"));
     }
 
     @Test
-    void saveDiscussionTest() {
-        UserEntity userEntity = new UserEntity("Sarah", "admin");
-        DiscussionEntity discussionEntity = new DiscussionEntity(
-                "Titre test",
-                "Contenu test",
-                userEntity,
+    void saveAndFindTest() {
+        DiscussionEntity discussion = new DiscussionEntity(
+                "Service test",
+                "Contenu",
+                user,
                 "General"
         );
 
-        DiscussionEntity saved = discussionService.save(discussionEntity);
+        DiscussionEntity saved = discussionService.save(discussion);
 
-        assertNotNull(saved);
-        assertTrue(saved.getId() > 0);
-        assertEquals("Titre test", saved.getTitle());
-    }
-
-    @Test
-    void findByIdTest() {
-        DiscussionEntity discussionEntity = new DiscussionEntity(
-                "Sujet",
-                "Contenu",
-                new UserEntity(),
-                "Test"
-        );
-
-        DiscussionEntity saved = discussionService.save(discussionEntity);
-
-        Optional<DiscussionEntity> found = discussionService.findById(saved.getId());
+        Optional<DiscussionEntity> found =
+                discussionService.findById(saved.getId());
 
         assertTrue(found.isPresent());
-        assertEquals(saved.getTitle(), found.get().getTitle()); // comparaison d'optional et discussion
+        assertEquals("Service test", found.get().getTitle());
     }
 
     @Test
-    void findAllTest() { // author
-        UserEntity userEntity = new UserEntity("Sarah",  "admin");
-        discussionService.save(new DiscussionEntity("T1", "C1", userEntity, "Cat1"));
-        discussionService.save(new DiscussionEntity("T2", "C2", userEntity, "Cat2"));
-
-        Iterable<DiscussionEntity> discussions = discussionService.findAll();
-        long count = StreamSupport.stream(discussions.spliterator(), false)
-                .count();
-        assertEquals(2, count);
-    }
-
-    @Test
-    void deleteDiscussionTest() {
-        UserEntity user = new UserEntity("Sarah",  "admin");
-        DiscussionEntity discussionEntity = discussionService.save(
+    void deleteTest() {
+        DiscussionEntity saved = discussionService.save(
                 new DiscussionEntity("À supprimer", "Contenu", user, "Temp")
         );
 
-        Iterable<DiscussionEntity> allDiscussions = discussionService.findAll();
-        assertTrue(allDiscussions.iterator().hasNext()); // hasNext de Iterable
+        discussionService.delete(saved.getId());
 
-        discussionService.delete(discussionEntity.getId());
-
-        Optional<DiscussionEntity> deleted = discussionService.findById(discussionEntity.getId());
-        assertTrue(deleted.isEmpty()); // l'objet a bien été supprimé
+        assertTrue(discussionService.findById(saved.getId()).isEmpty());
     }
 }

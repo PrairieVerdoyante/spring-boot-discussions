@@ -30,7 +30,7 @@ public class UserEntity implements UserDetails {
     private List<DiscussionEntity> discussions = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ResponseEntity> responses = new ArrayList<>();
+    private List<AnswerEntity> responses = new ArrayList<>();
 
     public UserEntity() {}
 
@@ -54,8 +54,11 @@ public class UserEntity implements UserDetails {
     public String getUsername() { return username; }
     public String getRole() { return role; }
     public List<DiscussionEntity> getDiscussions() { return discussions; }
-    public List<ResponseEntity> getResponses() { return responses; }
+    public List<AnswerEntity> getResponses() { return responses; }
 
     public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public void setRole(String role) { this.role = role; }
 }

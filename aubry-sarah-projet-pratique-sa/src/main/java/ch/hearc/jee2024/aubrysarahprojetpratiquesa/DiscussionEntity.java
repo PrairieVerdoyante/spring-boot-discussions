@@ -3,7 +3,6 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.h2.engine.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class DiscussionEntity {
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ResponseEntity> response = new ArrayList<>();
+    private List<AnswerEntity> response = new ArrayList<>();
 
     public DiscussionEntity() {
         this.createdAt = LocalDateTime.now();
@@ -102,7 +101,7 @@ public class DiscussionEntity {
         return deleted;
     }
 
-    public List<ResponseEntity> getResponses() {
+    public List<AnswerEntity> getResponses() {
         return response;
     }
 
@@ -118,9 +117,9 @@ public class DiscussionEntity {
         this.deleted = true;
     }
 
-    public void addResponse(ResponseEntity responseEntity) {
+    public void addResponse(AnswerEntity answerEntity) {
         if (!blocked && !deleted) {
-            response.add(responseEntity);
+            response.add(answerEntity);
         }
     }
 

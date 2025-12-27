@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "response")
-public class ResponseEntity {
+public class AnswerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,11 @@ public class ResponseEntity {
     @JoinColumn(name = "discussion_id")
     private DiscussionEntity discussion;
 
-    public ResponseEntity() {
+    public AnswerEntity() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public ResponseEntity(String content, UserEntity author, DiscussionEntity discussion) {
+    public AnswerEntity(String content, UserEntity author, DiscussionEntity discussion) {
         this.content = content;
         this.author = author;
         this.discussion = discussion;

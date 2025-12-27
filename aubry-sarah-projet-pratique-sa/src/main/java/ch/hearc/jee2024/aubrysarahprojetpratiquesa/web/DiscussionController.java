@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/discussions")
@@ -24,13 +24,15 @@ public class DiscussionController {
         this.userRepository = userRepository;
     }
 
-    // POST /discussions
+    // CREATE DISCUSSION
     @PostMapping
     public ResponseEntity<DiscussionEntity> createDiscussion(
             @RequestBody DiscussionCreateDto dto) {
 
         UserEntity user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Utilisateur non trouvé")
+                );
 
         DiscussionEntity discussion = new DiscussionEntity(
                 dto.getTitle(),
@@ -41,54 +43,51 @@ public class DiscussionController {
 
         DiscussionEntity saved = discussionService.save(discussion);
 
-        // 201 created
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // GET /discussions
+    // GET ALL (non supprimées)
     @GetMapping
-    public Iterable<DiscussionEntity> getAll() {
-        return discussionService.findAll();
+    public ResponseEntity<Iterable<DiscussionEntity>> getAllDiscussions() {
+        return ResponseEntity.ok(discussionService.findAll());
     }
 
-    // GET /discussions/{id}
+    // GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<DiscussionEntity> getDiscussionById(@PathVariable Long id) {
         return discussionService.findById(id)
+                .filter(d -> !d.isDeleted())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // PUT /discussions/{id}
+    // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<DiscussionEntity> updateDiscussion(
             @PathVariable Long id,
-            @RequestBody DiscussionEntity updatedData) {
+            @RequestBody DiscussionCreateDto dto) {
 
-        Optional<DiscussionEntity> existingOpt = discussionService.findById(id);
+        return discussionService.findById(id)
+                .map(existing -> {
+                    existing.setTitle(dto.getTitle());
+                    existing.setContent(dto.getContent());
+                    existing.setCategory(dto.getCategory());
 
-        if (existingOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        DiscussionEntity existing = existingOpt.get();
-        existing.setTitle(updatedData.getTitle());
-        existing.setContent(updatedData.getContent());
-        existing.setCategory(updatedData.getCategory());
-
-        DiscussionEntity updated = discussionService.save(existing);
-        return ResponseEntity.ok(updated);
+                    return ResponseEntity.ok(discussionService.save(existing));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE /discussions/{id}
+    // SOFT DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDiscussionById(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteDiscussion(@PathVariable Long id) {
 
-        if (discussionService.findById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        discussionService.delete(id);
-        return ResponseEntity.noContent().build();
+        return discussionService.findById(id)
+                .map(discussion -> {
+                    discussion.setDeleted(true);
+                    discussionService.save(discussion);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

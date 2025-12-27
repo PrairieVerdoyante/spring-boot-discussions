@@ -24,6 +24,8 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // pas de get : sécurité
+
     // POST /users
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody UserDTO dto) {

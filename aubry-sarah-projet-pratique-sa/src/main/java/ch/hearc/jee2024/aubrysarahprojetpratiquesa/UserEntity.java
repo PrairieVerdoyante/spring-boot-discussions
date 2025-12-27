@@ -1,12 +1,17 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "app_user")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +19,9 @@ public class UserEntity {
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private String role; // Exemple : "USER" / "ADMIN"
@@ -32,6 +40,17 @@ public class UserEntity {
     }
 
     public Long getId() { return id; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
     public String getUsername() { return username; }
     public String getRole() { return role; }
     public List<DiscussionEntity> getDiscussions() { return discussions; }

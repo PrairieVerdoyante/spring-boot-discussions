@@ -1,6 +1,7 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,10 @@ public final class DiscussionServiceImpl implements DiscussionService {
     @Override
     public Iterable<DiscussionEntity> findAll() {
         return repository.findAll();
+    }
+
+    public DiscussionEntity createDiscussion(String title, String content, String category, UserEntity user) {
+        DiscussionEntity discussion = new DiscussionEntity(title, content, user, category);
+        return repository.save(discussion);
     }
 }

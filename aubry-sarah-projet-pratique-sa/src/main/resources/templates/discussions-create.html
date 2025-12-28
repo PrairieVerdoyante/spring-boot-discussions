@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Créer une discussion</title>
+</head>
+<body>
+<h1>Créer une nouvelle discussion</h1>
+
+<form id="discussionForm">
+    <label for="title">Titre :</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="content">Contenu :</label><br>
+    <textarea id="content" name="content" required></textarea><br><br>
+
+    <label for="category">Catégorie :</label><br>
+    <input type="text" id="category" name="category" required><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<script>
+    const form = document.getElementById('discussionForm');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const data = {
+            title: document.getElementById('title').value,
+            content: document.getElementById('content').value,
+            category: document.getElementById('category').value,
+            userId: 1 // remplacer par l'ID réel de l'utilisateur connecté
+        };
+
+        fetch('/discussions', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert('Discussion créée !');
+                    window.location.href = '/discussions'; // retour à la liste
+                } else {
+                    alert('Erreur');
+                }
+            });
+    });
+</script>
+</body>
+</html>

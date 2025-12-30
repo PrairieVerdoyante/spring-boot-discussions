@@ -4,6 +4,10 @@
     <title>Discussions</title>
 </head>
 <body>
+
+<!-- header -->
+<div th:replace="fragments/header :: header"></div>
+
 <h1>Liste des discussions</h1>
 <div th:each="discussion : ${discussions}">
     <hr>

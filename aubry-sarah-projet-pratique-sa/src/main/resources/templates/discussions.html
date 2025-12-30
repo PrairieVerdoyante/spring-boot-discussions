@@ -24,6 +24,7 @@
 
     <div th:if="${#lists.isEmpty(discussion.responses)}">
         <em>Aucune réponse pour le moment</em>
+        <button>Répondre à cette discussion</button>
     </div>
 
     <div th:each="answer : ${discussion.responses}">
@@ -33,6 +34,15 @@
             <span th:text="${answer.content}"></span>
         </p>
     </div>
+    <form th:action="@{/answers/create}" method="post">
+        <input type="hidden" name="discussionId" th:value="${discussion.id}" />
+
+        <textarea name="content" required
+                  placeholder="Votre réponse..."></textarea>
+
+        <button type="submit">Répondre</button>
+    </form>
+
 </div>
 </body>
 </html>

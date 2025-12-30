@@ -22,7 +22,7 @@ public class DiscussionViewController {
     }
 
     // Page pour afficher toutes les discussions
-    @GetMapping("")
+    @GetMapping({"/view", ""})
     public String viewDiscussions(Model model) {
         model.addAttribute("discussions", discussionService.findAll());
         return "discussions"; // discussions.html

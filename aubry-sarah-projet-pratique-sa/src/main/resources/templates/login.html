@@ -17,6 +17,10 @@
     <button type="submit">Se connecter</button>
 </form>
 
+<p th:if="${param.error}">
+    ❌ Identifiants incorrects
+</p>
+
 <p>
     Pas de compte ?
     <a th:href="@{/register}">Créer un compte</a>

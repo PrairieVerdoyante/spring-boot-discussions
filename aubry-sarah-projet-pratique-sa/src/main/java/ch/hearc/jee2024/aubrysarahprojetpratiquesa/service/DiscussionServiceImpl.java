@@ -44,7 +44,7 @@ public final class DiscussionServiceImpl implements DiscussionService {
 
     @Override
     public Iterable<DiscussionEntity> findAll() {
-        return repository.findAll();
+        return repository.findAllWithResponses();
     }
 
     public DiscussionEntity createDiscussion(String title, String content, String category, UserEntity user) {

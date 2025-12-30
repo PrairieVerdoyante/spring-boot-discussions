@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HelloController {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -33,8 +34,8 @@ public class HelloController {
     public String registerUser(
             @RequestParam String username,
             @RequestParam String password,
-            @RequestParam String role) {
-
+            @RequestParam String role
+    ) {
         UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));

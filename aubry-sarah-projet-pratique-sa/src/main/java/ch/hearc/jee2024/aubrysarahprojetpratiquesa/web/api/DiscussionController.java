@@ -1,38 +1,33 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.api;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto.DiscussionCreateDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/discussions")
+@RequestMapping("/api/discussions")
 public class DiscussionController {
 
     private final DiscussionService discussionService;
-    private final UserRepository userRepository;
 
-    public DiscussionController(DiscussionService discussionService,
-                                UserRepository userRepository) {
+    public DiscussionController(DiscussionService discussionService) {
         this.discussionService = discussionService;
-        this.userRepository = userRepository;
     }
 
     // CREATE DISCUSSION
     @PostMapping
     public ResponseEntity<DiscussionEntity> createDiscussion(
-            @RequestBody DiscussionCreateDto dto) {
-
-        UserEntity user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Utilisateur non trouvé")
-                );
+            @RequestBody DiscussionCreateDto dto,
+            @AuthenticationPrincipal UserEntity user
+    ) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         DiscussionEntity discussion = new DiscussionEntity(
                 dto.getTitle(),
@@ -41,9 +36,9 @@ public class DiscussionController {
                 dto.getCategory()
         );
 
-        DiscussionEntity saved = discussionService.save(discussion);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(discussionService.save(discussion));
     }
 
     // GET ALL (non supprimées)
@@ -65,14 +60,13 @@ public class DiscussionController {
     @PutMapping("/{id}")
     public ResponseEntity<DiscussionEntity> updateDiscussion(
             @PathVariable Long id,
-            @RequestBody DiscussionCreateDto dto) {
-
+            @RequestBody DiscussionCreateDto dto
+    ) {
         return discussionService.findById(id)
                 .map(existing -> {
                     existing.setTitle(dto.getTitle());
                     existing.setContent(dto.getContent());
                     existing.setCategory(dto.getCategory());
-
                     return ResponseEntity.ok(discussionService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -81,7 +75,6 @@ public class DiscussionController {
     // SOFT DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteDiscussion(@PathVariable Long id) {
-
         return discussionService.findById(id)
                 .map(discussion -> {
                     discussion.setDeleted(true);

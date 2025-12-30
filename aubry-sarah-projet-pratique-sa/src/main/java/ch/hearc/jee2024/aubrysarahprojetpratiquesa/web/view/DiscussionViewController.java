@@ -1,4 +1,4 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.view;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/discussions")
 public class DiscussionViewController {
 
     private final DiscussionService discussionService;
@@ -20,20 +22,20 @@ public class DiscussionViewController {
     }
 
     // Page pour afficher toutes les discussions
-    @GetMapping("/discussions/view")
+    @GetMapping("")
     public String viewDiscussions(Model model) {
         model.addAttribute("discussions", discussionService.findAll());
         return "discussions"; // discussions.html
     }
 
     // Page pour afficher le formulaire de création
-    @GetMapping("/discussions/new")
+    @GetMapping("/new")
     public String showCreateForm() {
         return "discussion-create"; // discussion-create.html
     }
 
     // POST pour créer une discussion depuis le formulaire
-    @PostMapping("/discussions/create")
+    @PostMapping("/create")
     public String createDiscussionFromForm(
             @RequestParam String title,
             @RequestParam String content,
@@ -48,6 +50,6 @@ public class DiscussionViewController {
         DiscussionEntity discussion = new DiscussionEntity(title, content, user, category);
         discussionService.save(discussion); // utilise la méthode save de ton service
 
-        return "redirect:/discussions/view"; // rafraîchit la page après création
+        return "redirect:/discussions"; // rafraîchit la page après création
     }
 }

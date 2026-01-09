@@ -10,6 +10,8 @@ Créer une application de plateformes de discussion.
 
 * En tant qu'administrateur je veux pourvoir gérer les discussions (bloquer, effacer, modérer)
 ## Déroulé
+## Structure
+Les Controllers sont séparés: les fichiers utilisés pour le côté API (@RestController) sont dans le dossier "api", les contrôleurs web (@Controller) sont dans le dossier "web".
 ### MVC
 ### Entités
 ### mysql

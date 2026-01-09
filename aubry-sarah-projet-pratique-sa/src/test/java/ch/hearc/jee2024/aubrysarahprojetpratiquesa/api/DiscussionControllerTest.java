@@ -1,5 +1,6 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa.api;
 
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto.DiscussionCreateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;

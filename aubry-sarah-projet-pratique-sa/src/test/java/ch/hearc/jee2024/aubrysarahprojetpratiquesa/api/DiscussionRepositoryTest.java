@@ -1,4 +1,4 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa.api;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;

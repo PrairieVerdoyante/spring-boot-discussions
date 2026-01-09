@@ -37,6 +37,7 @@ public final class DiscussionServiceImpl implements DiscussionService {
         return repository.findAllWithResponses();
     }
 
+    @Override
     public DiscussionEntity createDiscussion(String title, String content, String category, UserEntity user) {
         DiscussionEntity discussion = new DiscussionEntity(title, content, user, category);
         return repository.save(discussion);

@@ -7,8 +7,14 @@ import java.util.Optional;
 
 public interface DiscussionService {
     DiscussionEntity save(DiscussionEntity discussionEntity);
+
     Optional<DiscussionEntity> findById(Long id);
+
     Iterable<DiscussionEntity> findAll();
+
     void delete(Long id);
+
     Iterable<DiscussionEntity> findByCategory(String category);
+
+    DiscussionEntity createDiscussion(String title, String content, String category, UserEntity user);
 }

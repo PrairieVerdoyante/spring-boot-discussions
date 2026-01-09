@@ -1,9 +1,8 @@
-package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
+package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

@@ -3,36 +3,44 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.api;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.UserService;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto.DiscussionCreateDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/discussions")
 public class DiscussionController {
 
     private final DiscussionService discussionService;
+    private final UserService userService;
 
-    public DiscussionController(DiscussionService discussionService) {
+    public DiscussionController(DiscussionService discussionService, UserService userService) {
         this.discussionService = discussionService;
+        this.userService = userService;
     }
 
     // CREATE DISCUSSION
     @PostMapping
     public ResponseEntity<DiscussionEntity> createDiscussion(
             @RequestBody DiscussionCreateDto dto,
-            @AuthenticationPrincipal UserEntity user
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        if (user == null) {
+        if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        Optional<UserEntity> user = userService.findByUsername(userDetails.getUsername());
 
         DiscussionEntity discussion = new DiscussionEntity(
                 dto.getTitle(),
                 dto.getContent(),
-                user,
+                user.get(),
                 dto.getCategory()
         );
 

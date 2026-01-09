@@ -8,6 +8,17 @@
 <!-- header -->
 <div th:replace="fragments/header :: header"></div>
 
+<!-- categories -->
+<form method="get" th:action="@{/discussions}">
+    <label>Catégorie :</label>
+    <select name="category" onchange="this.form.submit()">
+        <option value="">Toutes</option>
+        <option value="Java" th:selected="${selectedCategory == 'Java'}">Java</option>
+        <option value="Spring" th:selected="${selectedCategory == 'Spring'}">Spring</option>
+        <option value="SQL" th:selected="${selectedCategory == 'SQL'}">SQL</option>
+    </select>
+</form>
+
 <h1>Liste des discussions</h1>
 <div th:each="discussion : ${discussions}">
     <hr>

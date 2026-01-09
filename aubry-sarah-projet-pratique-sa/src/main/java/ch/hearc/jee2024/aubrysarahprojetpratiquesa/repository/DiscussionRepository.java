@@ -16,4 +16,10 @@ public interface DiscussionRepository extends CrudRepository<DiscussionEntity,Lo
     WHERE d.deleted = false
 """)
     List<DiscussionEntity> findAllWithResponses();
+
+    List<DiscussionEntity> findByDeletedFalse();
+
+    List<DiscussionEntity> findByCategoryAndDeletedFalse(String category);
+
+    List<DiscussionEntity> findByDeletedFalseOrderByCreatedAtDesc();
 }

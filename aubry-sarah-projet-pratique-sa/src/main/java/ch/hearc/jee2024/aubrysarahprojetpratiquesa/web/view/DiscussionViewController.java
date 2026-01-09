@@ -23,8 +23,14 @@ public class DiscussionViewController {
 
     // Page pour afficher toutes les discussions
     @GetMapping({"/view", ""})
-    public String viewDiscussions(Model model) {
-        model.addAttribute("discussions", discussionService.findAll());
+    public String viewDiscussions(@RequestParam(required = false) String category,
+                                  Model model) {
+        if (category == null || category.isBlank()) {
+            model.addAttribute("discussions", discussionService.findAll());
+        } else {
+            model.addAttribute("discussions", discussionService.findByCategory(category));
+        }
+        model.addAttribute("selectedCategory", category);
         return "discussions"; // discussions.html
     }
 

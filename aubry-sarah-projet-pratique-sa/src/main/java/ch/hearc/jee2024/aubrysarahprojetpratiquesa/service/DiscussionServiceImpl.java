@@ -17,16 +17,6 @@ public final class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public String sendDiscussion(String message, String destinataire) {
-        return "Discussion successfully sent!";
-    }
-
-    @Override
-    public String sendDiscussion(DiscussionEntity discussionEntity) {
-        return "send";
-    }
-
-    @Override
     public DiscussionEntity save(DiscussionEntity discussionEntity) {
         return (repository.save(discussionEntity));
     }
@@ -50,5 +40,10 @@ public final class DiscussionServiceImpl implements DiscussionService {
     public DiscussionEntity createDiscussion(String title, String content, String category, UserEntity user) {
         DiscussionEntity discussion = new DiscussionEntity(title, content, user, category);
         return repository.save(discussion);
+    }
+
+    @Override
+    public Iterable<DiscussionEntity> findByCategory(String category) {
+        return repository.findByCategoryAndDeletedFalse(category);
     }
 }

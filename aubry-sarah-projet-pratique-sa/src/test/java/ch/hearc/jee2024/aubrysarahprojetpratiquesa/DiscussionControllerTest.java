@@ -1,8 +1,7 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
-import com.fasterxml.jackson.databind.JsonNode;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto.DiscussionCreateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,74 +25,95 @@ class DiscussionControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
-    private Long userId;
+    @Autowired
+    private UserRepository userRepository;
+
+    private final String testUsername = "Sarah";
 
     @BeforeEach
     void setup() {
         userRepository.deleteAll();
-        userId = userRepository
-                .save(new UserEntity("Sarah", "ADMIN"))
-                .getId();
+        userRepository.save(new UserEntity(testUsername, "pass123", "ADMIN"));
     }
 
     @Test
-    void createAndGetByIdTest() throws Exception {
-        String json = """
-                {
-                  "title": "Sujet test",
-                  "content": "Contenu",
-                  "category": "General",
-                  "userId": %d
-                }
-                """.formatted(userId);
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
+    void createAndGetDiscussionTest() throws Exception {
+        // Créer le DTO
+        DiscussionCreateDto dto = new DiscussionCreateDto();
+        dto.setTitle("Sujet test");
+        dto.setContent("Contenu");
+        dto.setCategory("General");
 
-        MvcResult result = mvc.perform(post("/discussions")
+        String json = objectMapper.writeValueAsString(dto);
+
+        // CREATE
+        MvcResult createResult = mvc.perform(post("/api/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        JsonNode body = objectMapper.readTree(
-                result.getResponse().getContentAsString()
-        );
-
-        Long discussionId = body.get("id").asLong();
-
-        mvc.perform(get("/discussions/{id}", discussionId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Sujet test"));
-    }
-
-    @Test
-    void deleteTest() throws Exception {
-        String json = """
-        {
-          "title": "A supprimer",
-          "content": "Contenu",
-          "category": "Temp",
-          "userId": %d
-        }
-        """.formatted(userId);
-
-        MvcResult result = mvc.perform(post("/discussions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        String responseBody = result.getResponse().getContentAsString();
-        assertFalse(responseBody.isBlank(), "Response body is empty");
-
-        Long id = objectMapper
-                .readTree(responseBody)
+        Long discussionId = objectMapper.readTree(createResult.getResponse().getContentAsString())
                 .get("id").asLong();
 
-        mvc.perform(delete("/discussions/{id}", id))
+        // GET BY ID
+        mvc.perform(get("/api/discussions/{id}", discussionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Sujet test"))
+                .andExpect(jsonPath("$.content").value("Contenu"))
+                .andExpect(jsonPath("$.category").value("General"));
+
+        // GET ALL
+        mvc.perform(get("/api/discussions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Sujet test"));
+    }
+
+    @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
+    void updateAndDeleteDiscussionTest() throws Exception {
+        // CREATE d'abord
+        DiscussionCreateDto dto = new DiscussionCreateDto();
+        dto.setTitle("Sujet à modifier");
+        dto.setContent("Contenu");
+        dto.setCategory("General");
+
+        String json = objectMapper.writeValueAsString(dto);
+
+        MvcResult createResult = mvc.perform(post("/api/discussions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Long discussionId = objectMapper.readTree(createResult.getResponse().getContentAsString())
+                .get("id").asLong();
+
+        // UPDATE
+        DiscussionCreateDto updateDto = new DiscussionCreateDto();
+        updateDto.setTitle("Titre modifié");
+        updateDto.setContent("Contenu modifié");
+        updateDto.setCategory("Updated");
+
+        String updateJson = objectMapper.writeValueAsString(updateDto);
+
+        mvc.perform(put("/api/discussions/{id}", discussionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Titre modifié"))
+                .andExpect(jsonPath("$.content").value("Contenu modifié"))
+                .andExpect(jsonPath("$.category").value("Updated"));
+
+        // DELETE (soft)
+        mvc.perform(delete("/api/discussions/{id}", discussionId))
                 .andExpect(status().isNoContent());
+
+        // Vérifier que GET BY ID renvoie 404 (soft delete)
+        mvc.perform(get("/api/discussions/{id}", discussionId))
+                .andExpect(status().isNotFound());
     }
 }

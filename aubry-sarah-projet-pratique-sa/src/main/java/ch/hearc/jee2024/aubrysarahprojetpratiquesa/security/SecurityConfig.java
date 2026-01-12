@@ -18,8 +18,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2/**"))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/h2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/discussions/**").authenticated()
                         .anyRequest().permitAll()
@@ -28,6 +30,9 @@ public class SecurityConfig {
                         .loginPage("/login")           // ta page login.html
                         .defaultSuccessUrl("/discussions", true) // redirige après login réussi
                         .permitAll()
+                )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

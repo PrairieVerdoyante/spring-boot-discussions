@@ -25,6 +25,11 @@ public class HelloController {
         return "login";
     }
 
+    @GetMapping("/logout")
+    public String logout() {
+        return "login";
+    }
+
     @GetMapping("/register")
     public String registerForm() {
         return "register";

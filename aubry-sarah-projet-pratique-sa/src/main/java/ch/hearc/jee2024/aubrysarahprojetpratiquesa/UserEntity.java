@@ -26,10 +26,10 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private String role; // Exemple : "USER" / "ADMIN"
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiscussionEntity> discussions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerEntity> responses = new ArrayList<>();
 
     public UserEntity() {}

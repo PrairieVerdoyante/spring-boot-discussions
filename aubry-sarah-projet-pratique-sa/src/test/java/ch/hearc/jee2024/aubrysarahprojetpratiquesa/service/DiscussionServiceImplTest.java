@@ -92,7 +92,7 @@ class DiscussionServiceImplTest {
         assertThat(captured.getTitle()).isEqualTo("Titre");
         assertThat(captured.getContent()).isEqualTo("Contenu");
         assertThat(captured.getCategory()).isEqualTo("General");
-        assertThat(captured.getAuthor()).isEqualTo(user);
+        assertThat(captured.getUser()).isEqualTo(user);
 
         assertThat(created).isEqualTo(discussion);
     }

@@ -2,6 +2,7 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa.service;
 
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

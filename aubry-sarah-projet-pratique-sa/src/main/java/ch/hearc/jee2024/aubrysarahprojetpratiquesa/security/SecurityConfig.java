@@ -19,16 +19,21 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2/**"))
+                        .ignoringRequestMatchers("/h2/**","/login", "/api/**", "/users/**", "/api/answers/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/discussions/**").authenticated()
+                        .requestMatchers("/api/discussions/**").authenticated()
+                        .requestMatchers("/register", "/login").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")           // ta page login.html
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")// ta page login.html
                         .defaultSuccessUrl("/discussions", true) // redirige après login réussi
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .headers(headers -> headers
@@ -36,7 +41,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 );
 

@@ -24,14 +24,13 @@ public class DiscussionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
-    private UserEntity author;
+    private UserEntity user;
 
     @Column(nullable = false)
     private String category;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
 
     private boolean blocked;
     private boolean deleted;
@@ -44,10 +43,10 @@ public class DiscussionEntity {
         this.createdAt = LocalDateTime.now();
     }
 
-    public DiscussionEntity(String title, String content, UserEntity author, String category) {
+    public DiscussionEntity(String title, String content, UserEntity user, String category) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
         this.category = category;
         this.createdAt = LocalDateTime.now();
     }
@@ -77,8 +76,8 @@ public class DiscussionEntity {
         this.content = content;
     }
 
-    public UserEntity getAuthor() {
-        return author;
+    public UserEntity getUser() {
+        return user;
     }
 
     public String getCategory() {
@@ -101,7 +100,7 @@ public class DiscussionEntity {
         return deleted;
     }
 
-    public List<AnswerEntity> getResponses() {
+    public List<AnswerEntity> getResponse() {
         return response;
     }
 
@@ -123,8 +122,8 @@ public class DiscussionEntity {
         }
     }
 
-    public void setAuthor(UserEntity author) {
-        this.author = author;
+    public void setUser(UserEntity user) {
+        this.user   = user;
     }
 
     public void setBlocked(boolean blocked) {
@@ -140,7 +139,7 @@ public class DiscussionEntity {
         if (this == o) return true;
         if (!(o instanceof DiscussionEntity)) return false;
         DiscussionEntity that = (DiscussionEntity) o;
-        return id == that.id;
+        return id != null && id.equals(that.id);
     }
 
     @Override

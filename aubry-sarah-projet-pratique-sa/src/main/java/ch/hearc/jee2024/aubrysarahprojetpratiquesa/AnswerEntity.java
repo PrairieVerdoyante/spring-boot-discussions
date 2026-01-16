@@ -16,7 +16,7 @@ public class AnswerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity author;
+    private UserEntity user;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -29,9 +29,9 @@ public class AnswerEntity {
         this.createdAt = LocalDateTime.now();
     }
 
-    public AnswerEntity(String content, UserEntity author, DiscussionEntity discussion) {
+    public AnswerEntity(String content, UserEntity user, DiscussionEntity discussion) {
         this.content = content;
-        this.author = author;
+        this.user = user;
         this.discussion = discussion;
         this.createdAt = LocalDateTime.now();
     }
@@ -45,7 +45,7 @@ public class AnswerEntity {
     }
 
     public UserEntity getAuthor() {
-        return author;
+        return user;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -64,7 +64,7 @@ public class AnswerEntity {
         this.content = content;
     }
 
-    public void setAuthor(UserEntity author) {
-        this.author = author;
+    public void setAuthor(UserEntity user) {
+        this.user = user;
     }
 }

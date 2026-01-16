@@ -15,4 +15,21 @@ Les Controllers sont séparés: les fichiers utilisés pour le côté API (@Rest
 ### MVC
 ### Entités
 ### mysql
+Lancer le container docker à l'aide de la commande suivante : 
+
+docker run --name mysqll -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=hellospring -p 3306:3306 -d mysql:8.1
+
+se connecter avec mysql:
+docker exec -it mysqll mysql -u root -p
+
 ### Tests
+
+## Sécurité
+SpringSecurity a été utilisé pour gérer la connexion avec les rôles. exemple de rôle:
+.authorizeHttpRequests(auth -> auth
+
+            // USER
+            .requestMatchers("/user/**").hasRole("USER")
+
+            // ADMIN
+            .requestMatchers("/admin/**").hasRole("ADMIN")

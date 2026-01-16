@@ -27,7 +27,7 @@
 
     <p>
         <strong>Auteur :</strong>
-        <span th:text="${discussion.author.username}"></span>
+        <span th:text="${discussion.user.username}"></span>
         |
         <strong>Catégorie :</strong>
         <span th:text="${discussion.category}"></span>
@@ -37,14 +37,13 @@
 
     <h4>Réponses</h4>
 
-    <div th:if="${#lists.isEmpty(discussion.responses)}">
+    <div th:if="${#lists.isEmpty(discussion.response)}">
         <em>Aucune réponse pour le moment</em>
-        <button>Répondre à cette discussion</button>
     </div>
 
-    <div th:each="answer : ${discussion.responses}">
+    <div th:each="answer : ${discussion.response}">
         <p>
-            <strong th:text="${answer.author.username}"></strong>
+            <strong th:text="${answer.user.username}"></strong>
             :
             <span th:text="${answer.content}"></span>
         </p>

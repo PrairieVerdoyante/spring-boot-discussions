@@ -4,6 +4,7 @@ import ch.hearc.jee2024.aubrysarahprojetpratiquesa.AnswerEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.AnswerRepository;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.AnswerService;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class AnswerController {
     // todo: changer repository to service.
     private final DiscussionService discussionService;
-    private final AnswerRepository answerRepository;
+    private final AnswerService answerService;
 
     public AnswerController(DiscussionService discussionService,
-                            AnswerRepository answerRepository) {
+                            AnswerService answerService) {
         this.discussionService = discussionService;
-        this.answerRepository = answerRepository;
+        this.answerService = answerService;
     }
 
     @PostMapping("/{id}/answers")
@@ -38,9 +39,7 @@ public class AnswerController {
                 .filter(d -> !d.isDeleted() && !d.isBlocked())
                 .orElseThrow();
 
-        AnswerEntity answer = new AnswerEntity(content, user, discussion);
-        AnswerEntity saved = answerRepository.save(answer);
-
+        AnswerEntity saved = answerService.addAnswerToDiscussion(id, content, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

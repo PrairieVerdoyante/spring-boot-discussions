@@ -13,9 +13,11 @@
     <label>Catégorie :</label>
     <select name="category" onchange="this.form.submit()">
         <option value="">Toutes</option>
-        <option value="Java" th:selected="${selectedCategory == 'Java'}">Java</option>
-        <option value="Spring" th:selected="${selectedCategory == 'Spring'}">Spring</option>
-        <option value="SQL" th:selected="${selectedCategory == 'SQL'}">SQL</option>
+        <option th:each="cat : ${categories}"
+                th:value="${cat.name}"
+                th:text="${cat.name}"
+                th:selected="${selectedCategory == cat.name}">
+        </option>
     </select>
 </form>
 

@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/discussions/**").authenticated()
                         .requestMatchers("/api/discussions/**").authenticated()
+                        .requestMatchers("/api/answers/**").authenticated()
                         .requestMatchers("/register", "/login").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .anyRequest().permitAll()

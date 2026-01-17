@@ -36,7 +36,8 @@ public class DiscussionEntity {
     private boolean deleted;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    //@JsonManagedReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<AnswerEntity> response = new ArrayList<>();
 
     public DiscussionEntity() {

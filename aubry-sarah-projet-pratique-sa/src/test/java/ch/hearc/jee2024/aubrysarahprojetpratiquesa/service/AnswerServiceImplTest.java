@@ -20,7 +20,7 @@ class AnswerServiceImplTest {
     @BeforeEach
     void setup() {
         answerRepository = mock(AnswerRepository.class);
-        discussionService = mock(DiscussionService.class); // mock DiscussionService
+        discussionService = mock(DiscussionService.class);
         answerService = new AnswerServiceImpl(answerRepository, discussionService);
     }
 
@@ -30,22 +30,18 @@ class AnswerServiceImplTest {
         DiscussionEntity discussion = new DiscussionEntity("Sujet", "Contenu", user, "General");
         AnswerEntity answer = new AnswerEntity("Ma réponse", user, discussion);
 
-        // Mock du repository
         when(answerRepository.save(answer)).thenReturn(answer);
 
-        // Appel du service
         AnswerEntity saved = answerService.save(answer);
 
-        // Vérifier que le repository a bien été appelé
         ArgumentCaptor<AnswerEntity> captor = ArgumentCaptor.forClass(AnswerEntity.class);
         verify(answerRepository).save(captor.capture());
 
         AnswerEntity captured = captor.getValue();
         assertThat(captured.getContent()).isEqualTo("Ma réponse");
-        assertThat(captured.getAuthor()).isEqualTo(user);
+        assertThat(captured.getUser()).isEqualTo(user);
         assertThat(captured.getDiscussion()).isEqualTo(discussion);
 
-        // Vérifier la valeur retournée
         assertThat(saved).isEqualTo(answer);
     }
 
@@ -54,27 +50,21 @@ class AnswerServiceImplTest {
         UserEntity user = new UserEntity("Sarah", "pass123", "ADMIN");
         DiscussionEntity discussion = new DiscussionEntity("Sujet", "Contenu", user, "General");
 
-        // Mock DiscussionService
-        when(discussionService.findById(1L)).thenReturn(java.util.Optional.of(discussion));
-
-        // Mock AnswerRepository.save() pour renvoyer l'objet passé
         when(answerRepository.save(any(AnswerEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Appel du service
-        AnswerEntity saved = answerService.addAnswerToDiscussion(1L, "Ma réponse", user);
+        AnswerEntity saved = answerService.addAnswerToDiscussion(discussion, "Ma réponse", user);
 
-        // Vérifier que le repository a bien été appelé
         ArgumentCaptor<AnswerEntity> captor = ArgumentCaptor.forClass(AnswerEntity.class);
         verify(answerRepository).save(captor.capture());
 
         AnswerEntity captured = captor.getValue();
         assertThat(captured.getContent()).isEqualTo("Ma réponse");
-        assertThat(captured.getAuthor()).isEqualTo(user);
+        assertThat(captured.getUser()).isEqualTo(user);
         assertThat(captured.getDiscussion()).isEqualTo(discussion);
 
-        // Vérifier la valeur retournée
+        assertThat(discussion.getResponse()).contains(captured);
+
         assertThat(saved).isEqualTo(captured);
     }
-
 }

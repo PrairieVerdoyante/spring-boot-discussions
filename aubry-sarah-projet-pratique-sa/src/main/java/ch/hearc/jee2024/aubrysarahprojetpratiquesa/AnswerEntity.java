@@ -1,10 +1,12 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "response")
+@Table(name = "answer")
 public class AnswerEntity {
 
     @Id
@@ -16,14 +18,15 @@ public class AnswerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    //@JsonBackReference(value = "user-answer")
     private UserEntity user;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discussion_id")
     private DiscussionEntity discussion;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     public AnswerEntity() {
         this.createdAt = LocalDateTime.now();
@@ -44,27 +47,27 @@ public class AnswerEntity {
         return content;
     }
 
-    public UserEntity getAuthor() {
+    public UserEntity getUser() {
         return user;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 
     public DiscussionEntity getDiscussion() {
         return discussion;
     }
 
-    public void setDiscussion(DiscussionEntity discussion) {
-        this.discussion = discussion;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void setAuthor(UserEntity user) {
+    public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public void setDiscussion(DiscussionEntity discussion) {
+        this.discussion = discussion;
     }
 }

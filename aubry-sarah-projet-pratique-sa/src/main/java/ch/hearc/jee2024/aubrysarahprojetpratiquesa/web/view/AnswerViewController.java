@@ -38,6 +38,8 @@ public class AnswerViewController {
         AnswerEntity answer = new AnswerEntity(content, user, discussion);
         answerService.save(answer);
 
+        discussion.addResponse(answer);
+
         return "redirect:/discussions/view";
     }
 }

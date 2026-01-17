@@ -1,5 +1,7 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +32,8 @@ public class UserEntity implements UserDetails {
     private List<DiscussionEntity> discussions = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference(value = "user-answer")
+    @JsonIgnore
     private List<AnswerEntity> responses = new ArrayList<>();
 
     public UserEntity() {}

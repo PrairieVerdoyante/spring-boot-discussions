@@ -3,9 +3,9 @@ package ch.hearc.jee2024.aubrysarahprojetpratiquesa.api;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.AnswerEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.DiscussionEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.AnswerRepository;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.DiscussionRepository;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.repository.UserRepository;
-import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
+import ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.dto.AnswerDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,25 +29,21 @@ class AnswerControllerTest {
     private MockMvc mvc;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private DiscussionService discussionService;
-
-    @Autowired
-    private AnswerRepository answerRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private DiscussionRepository discussionRepository;
 
     private UserEntity user;
     private DiscussionEntity discussion;
 
     @BeforeEach
     void setup() {
-        // Nettoyer la base
-        answerRepository.deleteAll();
-        discussionService.findAll().forEach(d -> discussionService.delete(d.getId()));
+        // Nettoyer les tables
+        discussionRepository.deleteAll();
         userRepository.deleteAll();
 
         // Créer un utilisateur
@@ -54,36 +51,43 @@ class AnswerControllerTest {
         userRepository.save(user);
 
         // Créer une discussion
-        discussion = discussionService.createDiscussion("Sujet test", "Contenu", "General", user);
+        discussion = new DiscussionEntity("Test Discussion", "Contenu test", user, "General");
+        discussionRepository.save(discussion);
     }
-
     @Test
     @WithMockUser(username = "Sarah", roles = "ADMIN")
-    void addAnswerTest() throws Exception {
-        String content = "Ceci est une réponse";
+    void addAnswer_authenticatedUser_shouldReturnSavedAnswer() throws Exception {
+        String content = "Ma réponse test";
 
-        // Appel POST pour ajouter une réponse
-        String url = "/api/answers/" + discussion.getId() + "/answers?content=" + content;
+        String json = objectMapper.writeValueAsString(java.util.Map.of("content", content));
 
-        String response = mvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON))
+        String responseJson = mvc.perform(post("/api/answers/{id}", discussion.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.content").value(content))
+                .andExpect(jsonPath("$.username").value("Sarah"))
+                .andExpect(jsonPath("$.discussionId").value(discussion.getId()))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        // Convertir en AnswerEntity
-        AnswerEntity saved = objectMapper.readValue(response, AnswerEntity.class);
+        AnswerDto saved = objectMapper.readValue(responseJson, AnswerDto.class);
 
-        // Vérifications
-        assertThat(saved).isNotNull();
         assertThat(saved.getContent()).isEqualTo(content);
-        assertThat(saved.getAuthor().getUsername()).isEqualTo("Sarah");
-        assertThat(saved.getDiscussion().getId()).isEqualTo(discussion.getId());
+        assertThat(saved.getUsername()).isEqualTo("Sarah");
+        assertThat(saved.getDiscussionId()).isEqualTo(discussion.getId());
+    }
 
-        // Vérifier que la réponse est bien persistée en base
-        var answerOpt = answerRepository.findById(saved.getId());
-        assertThat(answerOpt).isPresent();
-        assertThat(answerOpt.get().getContent()).isEqualTo(content);
+    @Test
+    void addAnswer_unauthenticatedUser_shouldReturn401() throws Exception {
+        String json = objectMapper.writeValueAsString(
+                java.util.Map.of("content", "Réponse non autorisée")
+        );
+
+        mvc.perform(post("/api/answers/{id}", discussion.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isUnauthorized());
     }
 }

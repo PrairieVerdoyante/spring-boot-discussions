@@ -36,7 +36,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     void setup() {
         userRepository.deleteAll();
         userId = userRepository
-                .save(new UserEntity("Sarah", "ADMIN"))
+                .save(new UserEntity("Sarah", "pass","ADMIN"))
                 .getId();
     }
 
@@ -48,7 +48,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     @Test
     void discussionControllerExists() {
         String controllerFqdn =
-                "ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.DiscussionController";
+                "ch.hearc.jee2024.aubrysarahprojetpratiquesa.web.api.DiscussionController";
 
         try {
             Class<?> controller = Class.forName(controllerFqdn);
@@ -72,7 +72,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 }
                 """.formatted(userId);
 
-        mvc.perform(post("/discussions")
+        mvc.perform(post("/api/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
@@ -82,7 +82,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
 
     @Test
     void getAllDiscussionsShouldReturn200() throws Exception {
-        mvc.perform(get("/discussions"))
+        mvc.perform(get("/api/discussions"))
                 .andExpect(status().isOk());
     }
 
@@ -97,7 +97,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 }
                 """.formatted(userId);
 
-        MvcResult result = mvc.perform(post("/discussions")
+        MvcResult result = mvc.perform(post("/api/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
@@ -109,14 +109,14 @@ class AubrySarahProjetPratiqueSaApplicationTests {
 
         Long discussionId = body.get("id").asLong();
 
-        mvc.perform(get("/discussions/{id}", discussionId))
+        mvc.perform(get("/api/discussions/{id}", discussionId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Sujet unique"));
     }
 
     @Test
     void getDiscussionByIdShouldReturn404IfNotFound() throws Exception {
-        mvc.perform(get("/discussions/{id}", 9999))
+        mvc.perform(get("/api/discussions/{id}", 9999))
                 .andExpect(status().isNotFound());
     }
 
@@ -131,7 +131,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 }
                 """.formatted(userId);
 
-        MvcResult result = mvc.perform(post("/discussions")
+        MvcResult result = mvc.perform(post("/api/discussions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
@@ -141,10 +141,10 @@ class AubrySarahProjetPratiqueSaApplicationTests {
                 .readTree(result.getResponse().getContentAsString())
                 .get("id").asLong();
 
-        mvc.perform(delete("/discussions/{id}", discussionId))
+        mvc.perform(delete("/api/discussions/{id}", discussionId))
                 .andExpect(status().isNoContent());
 
-        mvc.perform(get("/discussions/{id}", discussionId))
+        mvc.perform(get("/api/discussions/{id}", discussionId))
                 .andExpect(status().isNotFound());
     }
 }

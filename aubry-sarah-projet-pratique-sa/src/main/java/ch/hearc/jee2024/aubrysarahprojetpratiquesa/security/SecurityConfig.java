@@ -29,6 +29,8 @@ public class SecurityConfig {
                         .requestMatchers("/discussions/**").authenticated()
                         .requestMatchers("/api/discussions/**").authenticated()
                         .requestMatchers("/api/answers/**").authenticated()
+                        .requestMatchers("/api/categories").permitAll()           // GET categories ouvert
+                        .requestMatchers("/api/categories/**").hasRole("ADMIN")  // POST categories réservé aux admins
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/register", "/login").permitAll()
                         .requestMatchers("/api/users/**").permitAll()

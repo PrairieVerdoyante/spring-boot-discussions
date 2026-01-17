@@ -1,5 +1,6 @@
 package ch.hearc.jee2024.aubrysarahprojetpratiquesa.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.web.servlet.function.RequestPredicates.headers;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -19,13 +22,14 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2/**","/login", "/api/**", "/users/**", "/api/answers/**"))
+                        .ignoringRequestMatchers("/h2/**","/login", "/api/**", "/users/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/discussions/**").authenticated()
                         .requestMatchers("/api/discussions/**").authenticated()
                         .requestMatchers("/api/answers/**").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/register", "/login").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .anyRequest().permitAll()
@@ -37,14 +41,21 @@ public class SecurityConfig {
                         .failureUrl("/login?error")
                         .permitAll()
                 )
-                .headers(headers -> headers
-                        .frameOptions(frame -> frame.sameOrigin())
-                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                         .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if(request.getRequestURI().startsWith("/api/")) {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
                 );
+
 
         return http.build();
     }

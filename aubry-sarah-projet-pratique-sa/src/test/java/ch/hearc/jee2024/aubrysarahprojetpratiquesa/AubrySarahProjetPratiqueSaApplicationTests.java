@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +63,7 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     }
 
     @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
     void createDiscussionShouldReturn201() throws Exception {
         String json = """
                 {
@@ -81,12 +83,14 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     }
 
     @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
     void getAllDiscussionsShouldReturn200() throws Exception {
         mvc.perform(get("/api/discussions"))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
     void getDiscussionByIdShouldReturn200() throws Exception {
         String json = """
                 {
@@ -115,12 +119,14 @@ class AubrySarahProjetPratiqueSaApplicationTests {
     }
 
     @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
     void getDiscussionByIdShouldReturn404IfNotFound() throws Exception {
         mvc.perform(get("/api/discussions/{id}", 9999))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithMockUser(username = "Sarah", roles = "ADMIN")
     void deleteDiscussionShouldReturn204() throws Exception {
         String json = """
                 {

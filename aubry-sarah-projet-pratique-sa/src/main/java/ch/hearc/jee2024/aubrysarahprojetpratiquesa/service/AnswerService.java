@@ -9,5 +9,4 @@ public interface AnswerService {
                                        String content,
                                        UserEntity user);
 
-    AnswerEntity save(AnswerEntity answer);
 }

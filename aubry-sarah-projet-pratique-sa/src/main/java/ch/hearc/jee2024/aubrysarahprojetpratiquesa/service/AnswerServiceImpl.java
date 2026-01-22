@@ -25,9 +25,6 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepository.save(answer);
     }
 
-    @Transactional
-    public AnswerEntity save(AnswerEntity answer) {
-        return answerRepository.save(answer);
-    }
+
 }
 

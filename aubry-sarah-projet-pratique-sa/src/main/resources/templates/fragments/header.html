@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <body>
 
 <header th:fragment="header"
         style="padding:10px; border-bottom:1px solid #ccc">
 
-    <nav>
-        <a th:href="@{/}">Accueil</a> |
-        <a th:href="@{/discussions}">Discussions</a> |
+    <nav style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <a th:href="@{/}">Accueil</a> |
+            <a th:href="@{/discussions}">Discussions</a> |
 
-        <span th:if="${#authorization.expression('isAuthenticated()')}">
-            Bonjour <strong th:text="${#authentication.name}"></strong> |
-            <a th:href="@{/logout}">Déconnexion</a>
-        </span>
+            <a th:href="@{/discussions/new}">Nouvelle discussion</a>
 
-        <span th:if="${#authorization.expression('!isAuthenticated()')}">
-            <a th:href="@{/login}">Connexion</a> |
-            <a th:href="@{/register}">Créer un compte</a>
-        </span>
+            <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{/categories/new}">Nouvelle catégorie</a>
+            </span>
+        </div>
+        <div>
+            <span th:if="${#authorization.expression('isAuthenticated()')}">
+                Bonjour <strong th:text="${#authentication.name}"></strong> |
+                <a th:href="@{/logout}">Déconnexion</a>
+            </span>
+
+            <span th:if="${#authorization.expression('!isAuthenticated()')}">
+                <a th:href="@{/login}">Connexion</a> |
+                <a th:href="@{/register}">Créer un compte</a>
+            </span>
+        </div>
     </nav>
 
 </header>

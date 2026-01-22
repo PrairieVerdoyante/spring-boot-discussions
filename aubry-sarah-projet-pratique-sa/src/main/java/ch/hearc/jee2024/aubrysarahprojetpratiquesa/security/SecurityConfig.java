@@ -27,9 +27,10 @@ public class SecurityConfig {
                         .requestMatchers("/h2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/discussions/**").authenticated()
+                        .requestMatchers("/categories/new", "/categories/**").hasRole("ADMIN")
                         .requestMatchers("/api/discussions/**").authenticated()
                         .requestMatchers("/api/answers/**").authenticated()
-                        .requestMatchers("/api/categories").permitAll()           // GET categories ouvert
+                        .requestMatchers("/api/categories").permitAll()// GET categories ouvert
                         .requestMatchers("/api/categories/**").hasRole("ADMIN")  // POST categories réservé aux admins
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/register", "/login").permitAll()

@@ -20,10 +20,14 @@ Le projet a été commencé en suivant les exercices du cours, notamment le chap
 * Création d'un service (DiscussionService)
 * Céation d'un repository.
 
-Le repository est injecté automatiquement dans le service.
+Il existe deux types de contrôleurs dans l’application : les contrôleurs REST et les contrôleurs Web.
+
+Les contrôleurs REST exposent les routes de l’API et retournent principalement des données (souvent au format JSON). Ils sont destinés à être consommés par des clients comme du JavaScript ou d’autres services.
+
+Les contrôleurs Web assurent la liaison avec les pages HTML. Ils préparent les données pour les vues, déclenchent certaines actions métier et gèrent les redirections entre les différentes pages de l’application.
 
 ### Spring Security
-Dans le projet, il y a deux rôles principaux : **administrateur** et **utilisateur**. J'ai voulu ajouter SpringSecurity afin de pouvoir définir des pages réservées à chacun de ces rôles.
+Dans le projet, il y a deux rôles principaux : **administrateur** et **utilisateur**. SpringSecurity a été utilisé afin de pouvoir définir des pages spécifiques réservées à chacun de ces rôles.
 #### Création d'un compte
 Il est possible de créer un compte. A la création d'un compte, l'utilisateur est créé et ajouté dans la table app_user (UserEntity, qui implémente UserDetails de SpringSecurity et gère ainsi les utilisateurs).
 ![](src/img/creation_compte_admin.png)
@@ -39,7 +43,14 @@ Voici un exemple de définition de routes en fonction de chaque rôle :
             // ADMIN
             .requestMatchers("/admin/**").hasRole("ADMIN")
 
+#### Catégories
+Deux catégories sont créées par défaut au lancement de l'application.
+Les utilisateurs avec le rôle ADMIN peuvent créer une catégorie et l'option "créer une catégorie" est visible dans la vue (header).
+#### Création de discussions
+La création de discussions est disponible pour les deux rôles sans restriction, de la même manière: dans un header.
 ### Thymeleaf
+Thymeleaf a été utilisé pour afficher des pages web et les relier à des contrôleurs Web.
+
 ## Structure
 Les Controllers sont séparés: les fichiers utilisés pour le côté API (@RestController) sont dans le dossier "api", les contrôleurs web (@Controller) sont dans le dossier "web".
 

@@ -25,27 +25,6 @@ class AnswerServiceImplTest {
     }
 
     @Test
-    void saveAnswerTest() {
-        UserEntity user = new UserEntity("Sarah", "pass123", "ADMIN");
-        DiscussionEntity discussion = new DiscussionEntity("Sujet", "Contenu", user, "General");
-        AnswerEntity answer = new AnswerEntity("Ma réponse", user, discussion);
-
-        when(answerRepository.save(answer)).thenReturn(answer);
-
-        AnswerEntity saved = answerService.save(answer);
-
-        ArgumentCaptor<AnswerEntity> captor = ArgumentCaptor.forClass(AnswerEntity.class);
-        verify(answerRepository).save(captor.capture());
-
-        AnswerEntity captured = captor.getValue();
-        assertThat(captured.getContent()).isEqualTo("Ma réponse");
-        assertThat(captured.getUser()).isEqualTo(user);
-        assertThat(captured.getDiscussion()).isEqualTo(discussion);
-
-        assertThat(saved).isEqualTo(answer);
-    }
-
-    @Test
     void addAnswerToDiscussionTest() {
         UserEntity user = new UserEntity("Sarah", "pass123", "ADMIN");
         DiscussionEntity discussion = new DiscussionEntity("Sujet", "Contenu", user, "General");

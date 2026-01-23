@@ -6,6 +6,7 @@ import ch.hearc.jee2024.aubrysarahprojetpratiquesa.UserEntity;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.CategoryService;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.DiscussionService;
 import ch.hearc.jee2024.aubrysarahprojetpratiquesa.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -82,5 +83,14 @@ public class DiscussionViewController {
         discussionService.save(discussion);
 
         return "redirect:/discussions"; // rafraîchit la page après création
+    }
+    @PostMapping("/delete")
+    public String deleteDiscussion(@RequestParam Long id) {
+        discussionService.findById(id)
+                .ifPresent(discussion -> {
+                    discussion.setDeleted(true);
+                    discussionService.save(discussion);
+                });
+        return "redirect:/discussions";
     }
 }

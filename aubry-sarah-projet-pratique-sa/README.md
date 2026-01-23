@@ -54,7 +54,43 @@ Thymeleaf a été utilisé pour afficher des pages web et les relier à des cont
 ## Structure
 Les Controllers sont séparés: les fichiers utilisés pour le côté API (@RestController) sont dans le dossier "api", les contrôleurs web (@Controller) sont dans le dossier "web".
 
-### Entités
+### Routes API Rest
+#### Discussions
+| Route                   | Méthode | Description                                                          | Sécurité                                                        |
+| ----------------------- | ------- | -------------------------------------------------------------------- |-----------------------------------------------------------------|
+| `/api/discussions`      | GET     | Récupère toutes les discussions non supprimées                       | publique                                                        |
+| `/api/discussions/{id}` | GET     | Récupère une discussion par son ID (si non supprimée)                | publique                                                        |
+| `/api/discussions`      | POST    | Crée une nouvelle discussion à partir d’un DTO                       | Authentifié                                                     |
+| `/api/discussions/{id}` | PUT     | Met à jour le titre, contenu et catégorie d’une discussion existante | publique|
+| `/api/discussions/{id}` | DELETE  | Supprime une discussion (soft delete)                                | admin                                                           |
+#### Réponses
+| Route                         | Méthode     | Description                                   | Sécurité    |
+| ----------------------------- | ----------- | --------------------------------------------- | ----------- |
+| `/api/answers/{discussionId}` | POST        | Ajoute une réponse à une discussion existante | Authentifié |
+#### Catégories
+| Route             | Méthode | Description                    | Sécurité         |
+| ----------------- | ------- | ------------------------------ | ---------------- |
+| `/api/categories` | GET     | Récupère toutes les catégories | publique         |
+| `/api/categories` | POST    | Crée une nouvelle catégorie    | Admin uniquement |
+#### Utilisateurs
+| Route    | Méthode | Description                                  | Sécurité |
+| -------- | ------- | -------------------------------------------- | -------- |
+| `/users` | POST    | Crée un nouvel utilisateur à partir d’un DTO | publique |
+
+### Routes Web
+#### Discussions
+| Route                                 | Méthode | Description                                                         | Sécurité    |
+| ------------------------------------- | ------- | ------------------------------------------------------------------- | ----------- |
+| `/discussions` ou `/discussions/view` | GET     | Affiche toutes les discussions avec filtrage par catégorie possible | publique    |
+| `/discussions/new`                    | GET     | Affiche le formulaire de création de discussion                     | Authentifié |
+| `/discussions/create`                 | POST    | Crée une discussion depuis le formulaire HTML                       | Authentifié |
+#### Catégories
+| Route              | Méthode | Description                                           | Sécurité         |
+| ------------------ | ------- | ----------------------------------------------------- | ---------------- |
+| `/categories/view` | GET     | Affiche toutes les catégories                         | publique         |
+| `/categories/new`  | POST    | Crée une nouvelle catégorie depuis le formulaire HTML | Admin uniquement |
+
+
 ### mysql
 Il est possible d'utiliser mysql pour ce projet. h2 a été utilisé durant le développement pour visualiser plus facilement les bases de données via l'interface web.
 Voici les modifications à effectuer.

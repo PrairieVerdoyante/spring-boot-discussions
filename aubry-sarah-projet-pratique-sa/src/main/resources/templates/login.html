@@ -1,30 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Connexion</title>
+    <title>Page de connexion</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
 
-<h2>Connexion</h2>
+<div class="center-page">
+    <div class="center-box">
 
-<form th:action="@{/login}" method="post">
-    <label>Username</label>
-    <input type="text" name="username"/>
+        <h2>Connexion</h2>
 
-    <label>Password</label>
-    <input type="password" name="password"/>
+        <form th:action="@{/login}" method="post">
+            <label>Username</label>
+            <input type="text" name="username"/>
 
-    <button type="submit">Se connecter</button>
-</form>
+            <label>Password</label>
+            <input type="password" name="password"/>
 
-<p th:if="${param.error}">
-    Identifiants incorrects
-</p>
+            <button type="submit">Se connecter</button>
+        </form>
 
-<p>
-    Pas de compte ?
-    <a th:href="@{/register}">Créer un compte</a>
-</p>
+        <p th:if="${param.error}">
+            Identifiants incorrects
+        </p>
+
+        <p>
+            Pas de compte ?
+            <a th:href="@{/register}">Créer un compte</a>
+        </p>
+
+    </div>
+</div>
 
 </body>
-</html>

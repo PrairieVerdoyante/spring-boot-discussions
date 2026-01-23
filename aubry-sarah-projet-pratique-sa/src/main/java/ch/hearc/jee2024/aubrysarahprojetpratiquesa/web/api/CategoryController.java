@@ -16,7 +16,7 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
         this.categoryService.save(new CategoryEntity("Informatique"));
-        this.categoryService.save(new CategoryEntity("Discussions"));
+        this.categoryService.save(new CategoryEntity("Général"));
     }
 
     // Create a category

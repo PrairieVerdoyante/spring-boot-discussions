@@ -1,0 +1,36 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.page {
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.center-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;   /* horizontal */
+    align-items: center;       /* vertical */
+}
+
+.center-box {
+    display: flex;
+    flex-direction: column;    /* empiler */
+    align-items: center;       /* centrer les éléments */
+    gap: 12px;
+}
+
+.center-box form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* centre inputs + bouton */
+    gap: 8px;
+    text-align: center;  /* centre les textes, y compris h2, labels, etc. */
+}
+
+.center-box input,
+.center-box button {
+    width: 220px;
+}

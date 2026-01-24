@@ -21,22 +21,7 @@ public class CategoryViewController {
         this.categoryService = categoryService;
     }
 
-    /**
-     * Affiche les catégories dans un select pour le filtrage
-     * ou dans une page dédiée si besoin
-     */
-    @GetMapping("/view")
-    public String showCategories(
-            @RequestParam(value = "selected", required = false) String selectedCategory,
-            Model model) {
 
-        Iterable<CategoryEntity> categories = categoryService.findAll();
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("selectedCategory", selectedCategory);
-
-        return "categories"; // Thymeleaf template: categories.html
-    }
 
     @GetMapping("/new")
     public String showNewCategoryForm(Model model) {

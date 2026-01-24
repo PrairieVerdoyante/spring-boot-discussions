@@ -22,7 +22,7 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2/**","/login", "/api/**", "/users/**"))
+                        .ignoringRequestMatchers("/h2", "/h2/**","/login", "/api/**", "/users/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

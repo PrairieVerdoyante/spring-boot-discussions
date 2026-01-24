@@ -21,8 +21,6 @@ public class CategoryViewController {
         this.categoryService = categoryService;
     }
 
-
-
     @GetMapping("/new")
     public String showNewCategoryForm(Model model) {
         model.addAttribute("category", new CategoryEntity());

@@ -4,12 +4,6 @@ public class AnswerCreateDto {
 
     private String content;
 
-    public AnswerCreateDto() {}
-
-    public AnswerCreateDto(String content) {
-        this.content = content;
-    }
-
     // getter / setter
     public String getContent() {
         return content;

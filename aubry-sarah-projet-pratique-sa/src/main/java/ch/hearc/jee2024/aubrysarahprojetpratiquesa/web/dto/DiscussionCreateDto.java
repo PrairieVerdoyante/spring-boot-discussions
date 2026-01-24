@@ -9,12 +9,6 @@ public class DiscussionCreateDto {
     public DiscussionCreateDto() {
     }
 
-    public DiscussionCreateDto(String title, String content, String category) {
-        this.title = title;
-        this.content = content;
-        this.category = category;
-    }
-
     // Getters
     public String getTitle() {
         return title;

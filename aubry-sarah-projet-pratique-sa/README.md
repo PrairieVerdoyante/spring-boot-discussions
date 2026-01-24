@@ -43,6 +43,8 @@ Voici un exemple de définition de routes en fonction de chaque rôle :
             // ADMIN
             .requestMatchers("/admin/**").hasRole("ADMIN")
 
+Une fois l'utilisateur connecté sur l'interface visuelle, son nom est visible en haut à droite de la page, dans le header.
+
 #### Catégories
 Deux catégories sont créées par défaut au lancement de l'application.
 Les utilisateurs avec le rôle ADMIN peuvent créer une catégorie et l'option "créer une catégorie" est visible dans la vue (header).
@@ -52,7 +54,7 @@ La création de discussions est disponible pour les deux rôles sans restriction
 Thymeleaf a été utilisé pour afficher des pages web et les relier à des contrôleurs Web.
 
 ## Structure
-Les Controllers sont séparés: les fichiers utilisés pour le côté API (@RestController) sont dans le dossier "api", les contrôleurs web (@Controller) sont dans le dossier "web".
+Les Controllers sont séparés: les fichiers utilisés pour le côté API (@RestController) sont dans le dossier "api", les contrôleurs web (@Controller) sont dans le dossier "web". Il est donc possible d'utiliser cette application grâce à son API ou via l'interface Web directement.
 
 ### Routes API Rest
 #### Discussions
@@ -92,8 +94,9 @@ Les Controllers sont séparés: les fichiers utilisés pour le côté API (@Rest
 
 
 ### mysql
-Il est possible d'utiliser mysql pour ce projet. h2 a été utilisé durant le développement pour visualiser plus facilement les bases de données via l'interface web.
-Voici les modifications à effectuer.
+h2 a été utilisé durant le développement en tant que préférence personnelle. Mysql a ensuite été ajouté à ce projet. Il est possible de visualiser les tables dans Docker.
+
+Voilà les directives à suivre :
 
 Dans le fichier `application.properties`, remplacer "h2" par "mysql".
 
@@ -107,3 +110,16 @@ Se connecter avec mysql:
 `docker exec -it mysqll mysql -u root -p`
 
 ### Tests
+Des tests ont été créés pour chaque controller, service ou repository contenant des fonctions publiques.
+
+* Les réponses sont liées aux discussions. Quand on supprime une discussion, un "soft delete" est effectué dans la prespective de pouvoir conserver un historique plus tard.
+* Il n'existe pas de route pour supprimer les réponses individuellement.
+
+## Bilan
+L'application crée est fonctionnelle. Il est possible de se connecter ou de créer un compte grâce à SpringSecurity, de créer des discussions, d'y répondre, d'ajouter des catégories, et de trier les discussions par catégorie.
+
+La restriction des actions en fonction des rôles a été gérée grâce à la définition des routes dans SpringSecurity.
+
+J'ai personnellement trouvé ce projet très intéressant. C'était une bonne manière d'utiliser Java dans un nouveau contexte et de comprendre le fonctionnement des applications Web.
+
+

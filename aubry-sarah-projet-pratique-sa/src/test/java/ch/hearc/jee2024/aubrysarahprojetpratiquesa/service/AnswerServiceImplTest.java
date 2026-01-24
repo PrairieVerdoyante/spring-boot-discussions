@@ -21,7 +21,7 @@ class AnswerServiceImplTest {
     void setup() {
         answerRepository = mock(AnswerRepository.class);
         discussionService = mock(DiscussionService.class);
-        answerService = new AnswerServiceImpl(answerRepository, discussionService);
+        answerService = new AnswerServiceImpl(answerRepository);
     }
 
     @Test

@@ -70,4 +70,5 @@ public class AnswerEntity {
     public void setDiscussion(DiscussionEntity discussion) {
         this.discussion = discussion;
     }
+
 }

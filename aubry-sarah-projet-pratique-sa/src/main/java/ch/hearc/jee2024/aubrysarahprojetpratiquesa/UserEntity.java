@@ -70,4 +70,5 @@ public class UserEntity implements UserDetails {
         this.password = password;
     }
     public void setRole(String role) { this.role = role; }
+    public boolean isAdmin() {return this.role.equals("admin");}
 }

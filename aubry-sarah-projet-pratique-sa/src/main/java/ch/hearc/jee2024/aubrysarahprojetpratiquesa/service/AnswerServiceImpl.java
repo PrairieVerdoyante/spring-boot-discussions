@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
-    private final DiscussionService discussionService;
 
-    public AnswerServiceImpl(AnswerRepository answerRepository, DiscussionService discussionService) {
+    public AnswerServiceImpl(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
-        this.discussionService = discussionService;
     }
 
     @Transactional
@@ -24,6 +22,8 @@ public class AnswerServiceImpl implements AnswerService {
         discussion.addResponse(answer);
         return answerRepository.save(answer);
     }
+
+
 
 
 }

@@ -1,0 +1,309 @@
+{
+  "info": {
+    "_postman_id": "a7d33b95-812b-4b75-94f4-24e7e353c35c",
+    "name": "Spring app sa - discussions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47715731"
+  },
+  "item": [
+    {
+      "name": "1-create account user",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"sarah\",\r\n  \"password\": \"pass\",\r\n  \"role\": \"USER\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/users",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "1-create account admin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"gertrude\",\r\n  \"password\": \"pass\",\r\n  \"role\": \"ADMIN\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/users",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2-connexion-user",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "sarah",
+              "type": "text",
+              "uuid": "c7f57b01-9673-4e0e-8343-09b68f74dd36"
+            },
+            {
+              "key": "password",
+              "value": "pass",
+              "type": "text",
+              "uuid": "cc9f01ae-5647-44bd-94db-edece7766e23"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8081/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2-connexion-admin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "gertrude",
+              "type": "text",
+              "uuid": "c7f57b01-9673-4e0e-8343-09b68f74dd36"
+            },
+            {
+              "key": "password",
+              "value": "pass",
+              "type": "text",
+              "uuid": "cc9f01ae-5647-44bd-94db-edece7766e23"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8081/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3-create a new discussion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Cookie",
+            "value": "JSESSIONID=60EC6F2BD3CD1B36A326CB7DAEEBF4C0",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Les meilleures recettes de cuisine\",\r\n  \"content\": \"Brownies au chocolat\",\r\n  \"category\": \"cuisine\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/api/discussions",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "discussions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get all discussions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8081/api/discussions",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "discussions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create an answer to a discussion",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"content\": \"Ma réponse test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/api/answers/1",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "answers",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "localhost:8081/users",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"ADMIN\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/users",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a new category (admin only)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\"java\"",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8081/api/categories",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "categories"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete a discussion",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "delete discussion",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:8081/api/discussions/1",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "discussions",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

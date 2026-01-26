@@ -25,7 +25,12 @@ Il existe deux types de contrôleurs dans l’application : les contrôleurs RES
 Les contrôleurs REST exposent les routes de l’API et retournent principalement des données (souvent au format JSON). Ils sont destinés à être consommés par des clients comme du JavaScript ou d’autres services.
 
 Les contrôleurs Web assurent la liaison avec les pages HTML. Ils préparent les données pour les vues, déclenchent certaines actions métier et gèrent les redirections entre les différentes pages de l’application.
+### Utilisation des dtos
+Dans l'application, des DTos (Data transfer Object) sont utilisés pour séparer la couche API de la couche de persistance. Les entités représentent le modèle de données, et les DTO représentent les objets échangés avec les clients via l'API REST.
 
+Les contrôleurs ne manipulent pas directement les entités, mais des DTO, ce qui permet de ne pas transmettre d'informations sensibles, commes les mots de passe (user), et d'éviter d'exposer la structure interne de la base de données. Cela simplifie aussi les tests des contrôleurs.
+
+Il s'agit donc d'une sécurité supplémentaire, qui apporte aussi une meilleure lisibilité.
 ### Spring Security
 Dans le projet, il y a deux rôles principaux : **administrateur** et **utilisateur**. SpringSecurity a été utilisé afin de pouvoir définir des pages spécifiques réservées à chacun de ces rôles.
 #### Création d'un compte
